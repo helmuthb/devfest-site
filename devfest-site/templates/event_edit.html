@@ -29,6 +29,7 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po
 <h3>Basic Details</h3>
 <hr>
 {{ with_errors(form.gplus_event_url) }}
+{{ with_errors(form.hashtag) }}
 {{ with_errors(form.external_url) }}
 {{ with_errors(form.external_width) }}
 {{ with_errors(form.external_height) }}

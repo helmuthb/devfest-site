@@ -4,11 +4,10 @@ try:
   import settings_local as settings
 except:
   import settings
-
 import gdata.gauth
 import gdata.spreadsheets.client
 from django.core.serializers import deserialize, serialize
-from google.appengine.api import memcache
+from google.appengine.api import memcache, urlfetch
 from google.appengine.ext import db, search
 from google.appengine.datastore import entity_pb
 from lib.model import Event, Sponsor, Speaker, Session, Track, Day, Slot
@@ -16,6 +15,8 @@ import datetime
 import math
 import pickle
 import sys
+import urllib
+import json
 
 # cached version of an object
 class CachedObject():
@@ -463,3 +464,21 @@ class CSlot (DbCachedObject):
    except:
      pass
     
+class CGPlusFeed (OCachedObject):
+  def __init__(self, hashtag):
+    self.cache_key = "GPlusFeed(%s)" % hashtag
+    self.hashtag = hashtag
+    self.entity_collection = {}
+    self.max_time = 60
+    CachedObject.__init__(self)    
+
+  # load G+ feed for hashtag
+  def load_from_db(self):
+    self.entity_collection = {}
+    try:
+      url = "https://www.googleapis.com/plus/v1/activities?query=%s&maxResults=10&key=%s" % (urllib.quote(self.hashtag,''), settings.GPLUS_API_KEY)
+      resp = urlfetch.fetch(url)
+      if resp.status_code == 200:
+        self.entity_collection = json.loads(resp.content)
+    except:
+      pass

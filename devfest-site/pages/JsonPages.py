@@ -1,3 +1,7 @@
+try:
+  import settings_local as settings
+except:
+  import settings
 from lib.view import JSONPage
 from lib.view import Page
 from google.appengine.api import urlfetch
@@ -7,7 +11,7 @@ from google.appengine.ext import db
 from lib.model import Event
 from lib.forms import EventForm
 from lib.cobjects import (CEventList, CEvent, CSponsorList,
-     CSpeakerList, CSessionList, CTrackList)
+     CSpeakerList, CSessionList, CTrackList, CGPlusFeed)
 from datetime import datetime
 import urllib
 import json
@@ -116,4 +120,17 @@ class JsonSessionListPage(JSONPage):
              'speakers': [ str(key) for key in session.speakers ]
            }
       response.append(se)
+    self.values["response"] = response
+
+# get the Gplus stream for an event
+class JsonPlusStreamPage(JSONPage):
+  def show(self, event_id):
+    event = CEvent(event_id).get()
+    response = CGPlusFeed(event.hashtag).get()
+    self.values["response"] = response
+
+# get the Gplus stream globally
+class JsonGlobalPlusStreamPage(JSONPage):
+  def show(self):
+    response = CGPlusFeed(settings.GLOBAL_HASHTAG).get()
     self.values["response"] = response

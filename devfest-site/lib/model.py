@@ -39,6 +39,7 @@ class Event(db.Model):
   expected_participants = db.StringProperty()
   subdomain             = db.StringProperty()  
   approved              = db.BooleanProperty(default = False)
+  hashtag               = db.StringProperty()
   
 
   # get the location of the event from Google Maps
