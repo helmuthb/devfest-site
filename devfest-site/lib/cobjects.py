@@ -464,6 +464,7 @@ class CSlot (DbCachedObject):
    except:
      pass
     
+# cached version of plus-stream
 class CGPlusFeed (OCachedObject):
   def __init__(self, hashtag):
     self.cache_key = "GPlusFeed(%s)" % hashtag

@@ -13,6 +13,7 @@ from pages.SessionsPages import *
 from pages.RegisterPage import *
 from pages.JsonPages import *
 from pages.SlotsPages import *
+from pages.PlusFragments import *
 
 app = webapp2.WSGIApplication([
                               ('^/logout$', LogoutPage),
@@ -51,6 +52,8 @@ app = webapp2.WSGIApplication([
                               ('^/json/event/(.*)/plus$', JsonPlusStreamPage),
                               ('^/json/event/(.*)$', JsonEventPage),
                               ('^/json/plus$', JsonGlobalPlusStreamPage),
+                              ('^/fragment/event/(.*)/plus$', PlusStreamFragment),
+                              ('^/fragment/plus$', GlobalPlusStreamFragment),
                               ('^/events$', EventListPage),
                               ('^/events/schedule$', EventSchedulePage),
                               ('^/event/(.*)$', EventPage),

@@ -1,0 +1,10 @@
+<div id="gplusstream">
+{% for message in response['items'] %}
+<div class="plusMessage">
+ <div class="plusActor"><a href="{{message['actor']['url']}}" target="_blank">{{message['actor']['displayName']}}</a></div>
+ <div class="plusTitle">{{message['title']}}</div
+ <div class="plusContent">{{message['object']['content']}}</div>
+ <div class="plusPlaceName">{{ message['placeName'] }}</div>
+</div>
+{% endfor %}
+</div>
