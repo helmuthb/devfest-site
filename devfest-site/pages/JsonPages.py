@@ -11,7 +11,7 @@ from google.appengine.ext import db
 from lib.model import Event
 from lib.forms import EventForm
 from lib.cobjects import (CEventList, CEvent, CSponsorList,
-     CSpeakerList, CSessionList, CTrackList, CGPlusFeed)
+     CSpeakerList, CSessionList, CTrackList, CGPlusFeed, CSlot, CTrack)
 from datetime import datetime
 import urllib
 import json
@@ -40,7 +40,8 @@ class JsonEventListPage(JSONPage):
 class JsonEventPage(JSONPage):
   def show(self, event_id):
     event = CEvent(event_id).get()
-    response = {
+    if event:
+      response = {
         'gdg_chapters': event.gdg_chapters,
         'gplus_event_url': event.gplus_event_url,
         'status': event.status,
@@ -56,6 +57,8 @@ class JsonEventPage(JSONPage):
         'agenda': event.agenda,
         'agenda_description': event.agenda_description,
         'technologies': event.technologies }
+    else:
+      response = {}
     self.values["response"] = response
 
 # export all speakers of an event
@@ -110,15 +113,19 @@ class JsonSessionListPage(JSONPage):
     for session in CSessionList(event_id).get():
       se = { 'title': session.title,
              'abstract': session.abstract,
-             'start': session.slot.start.isoformat(),
-             'end': session.slot.end.isoformat(),
              'room': session.room,
              'level': session.level,
-             'track': session.track.name,
              'live_url': session.live_url,
              'youtube_url': session.youtube_url,
              'speakers': [ str(key) for key in session.speakers ]
            }
+      if session.track:
+        track = CTrack(session.track.get_id())
+        se['track'] = track.name
+      if session.slot:
+        slot = CSlot(session.slot.get_id())
+        se['start'] = slot.start.isoformat()
+        se['end'] = slot.end.isoformat()
       response.append(se)
     self.values["response"] = response
 
